@@ -100,3 +100,7 @@ function stopTimer(timerID) {
   startBtn.disabled = false;
   input.disabled = false;
 }
+
+Notiflix.Notify.init({
+  position: 'left-top', // 'right-top' - 'right-bottom' - 'left-top' - 'left-bottom' - 'center-top' - 'center-bottom' - 'center-center'
+});
