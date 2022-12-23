@@ -7,10 +7,9 @@ let difference;
 let timer = {};
 let currentDate;
 
+const NEW_YEAR = new Date('01-01-2023 00:00');
 const startBtn = document.querySelector('button[data-start]');
 const input = document.querySelector('#datetime-picker');
-
-console.log(input);
 
 const refs = {
   daysTimer: document.querySelector('span[data-days]'),
@@ -38,12 +37,17 @@ flatpickr('#datetime-picker', options);
 
 function choiseDate() {
   currentDate = new Date();
-  if (currentDate - selectedDate < 0) {
+  const newYearTime = selectedDate - NEW_YEAR;
+
+  if (newYearTime === 0) {
+    Notiflix.Notify.success(`SOON THE NEW YEAR`);
+    startBtn.disabled = false;
+    return;
+  } else if (currentDate - selectedDate < 0) {
     Notiflix.Notify.success(`I start the countdown timer to ${selectedDate}`);
     startBtn.disabled = false;
     return;
-  }
-  Notiflix.Notify.failure('Please choose a date in the future');
+  } else Notiflix.Notify.failure('Please choose a date in the future');
 }
 
 function lunchTimer() {
@@ -51,7 +55,6 @@ function lunchTimer() {
     currentDate = new Date();
     difference = selectedDate - currentDate;
     timer = convertMs(difference);
-    console.log(difference);
     addLeadingZero(timer);
     startBtn.disabled = true;
     input.disabled = true;
@@ -86,7 +89,6 @@ function addLeadingZero(timer) {
 }
 
 function pageTimerUpdates(zeroTimer, refs) {
-  // const abv = timer.days.padStart(2, '0');
   refs.daysTimer.textContent = zeroTimer.days;
   refs.hoursTimer.textContent = zeroTimer.hours;
   refs.minutesTimer.textContent = zeroTimer.minutes;
