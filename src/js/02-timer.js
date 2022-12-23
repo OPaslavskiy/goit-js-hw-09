@@ -1,5 +1,6 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import Notiflix from 'notiflix';
 
 let selectedDate;
 let difference;
@@ -7,6 +8,9 @@ let timer = {};
 let currentDate;
 
 const startBtn = document.querySelector('button[data-start]');
+const input = document.querySelector('#datetime-picker');
+
+console.log(input);
 
 const refs = {
   daysTimer: document.querySelector('span[data-days]'),
@@ -22,20 +26,24 @@ const options = {
   minuteIncrement: 1,
   onClose(selectedDates) {
     selectedDate = selectedDates[0];
+    choiseDate();
   },
 };
 
-startBtn.addEventListener('click', choiseDate);
+startBtn.addEventListener('click', lunchTimer);
+
+startBtn.disabled = true;
 
 flatpickr('#datetime-picker', options);
 
 function choiseDate() {
   currentDate = new Date();
   if (currentDate - selectedDate < 0) {
-    lunchTimer();
+    Notiflix.Notify.success(`I start the countdown timer to ${selectedDate}`);
+    startBtn.disabled = false;
     return;
   }
-  alert('Please choose a date in the future');
+  Notiflix.Notify.failure('Please choose a date in the future');
 }
 
 function lunchTimer() {
@@ -45,6 +53,8 @@ function lunchTimer() {
     timer = convertMs(difference);
     console.log(difference);
     addLeadingZero(timer);
+    startBtn.disabled = true;
+    input.disabled = true;
     if (difference < 1000) {
       stopTimer(timerID);
     }
@@ -85,4 +95,6 @@ function pageTimerUpdates(zeroTimer, refs) {
 
 function stopTimer(timerID) {
   clearInterval(timerID);
+  startBtn.disabled = false;
+  input.disabled = false;
 }
